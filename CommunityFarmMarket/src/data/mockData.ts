@@ -157,7 +157,7 @@ export const mockProducts: Product[] = [
     unit: '200g',
     category: 'dairy',
     images: ['https://picsum.photos/seed/cheese/400/400'],
-    dietary: ['gluten-free', 'ketolow-carb'],
+    dietary: ['gluten-free', 'keto', 'low-carb'],
     inStock: true,
     availableNow: true,
     preOrder: false,

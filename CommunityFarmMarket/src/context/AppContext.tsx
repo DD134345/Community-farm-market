@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { User, Seller, Product, CartItem, Order, Notification } from '../types';
+import { User, Seller, Product, CartItem, Order, Notification, DietaryTag } from '../types';
 import { mockSellers, mockProducts, currentUser } from '../data/mockData';
 
 interface AppContextType {
@@ -17,8 +17,8 @@ interface AppContextType {
   addNotification: (notification: Notification) => void;
   selectedDistrict: string;
   setSelectedDistrict: (district: string) => void;
-  dietaryFilters: string[];
-  setDietaryFilters: (filters: string[]) => void;
+  dietaryFilters: DietaryTag[];
+  setDietaryFilters: React.Dispatch<React.SetStateAction<DietaryTag[]>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -30,7 +30,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState('All');
-  const [dietaryFilters, setDietaryFilters] = useState<string[]>([]);
+  const [dietaryFilters, setDietaryFilters] = useState<DietaryTag[]>([]);
 
   const addToCart = (product: Product, quantity: number) => {
     setCart(prev => {

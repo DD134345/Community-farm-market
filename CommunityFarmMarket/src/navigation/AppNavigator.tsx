@@ -1,0 +1,98 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+
+import HomeScreen from '../screens/HomeScreen';
+import CartScreen from '../screens/CartScreen';
+import CommunityScreen from '../screens/CommunityScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import ProductDetailScreen from '../screens/ProductDetailScreen';
+import SellerProfileScreen from '../screens/SellerProfileScreen';
+import CheckoutScreen from '../screens/CheckoutScreen';
+
+import { colors } from '../utils/theme';
+
+export type RootStackParamList = {
+  MainTabs: undefined;
+  ProductDetail: { product: any };
+  SellerProfile: { seller: any };
+  Checkout: { paymentMethod: string; deliveryFee: number; platformFee: number; total: number };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator();
+
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'home';
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Cart') {
+            iconName = focused ? 'cart' : 'cart-outline';
+          } else if (route.name === 'Community') {
+            iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.divider,
+          paddingTop: 8,
+          paddingBottom: 8,
+          height: 60,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="Community" component={CommunityScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+
+export default function Navigation() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
+        <Stack.Screen name="MainTabs" component={MainTabs} />
+        <Stack.Screen
+          name="ProductDetail"
+          component={ProductDetailScreen as any}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="SellerProfile"
+          component={SellerProfileScreen as any}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="Checkout"
+          component={CheckoutScreen as any}
+          options={{ animation: 'slide_from_bottom' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

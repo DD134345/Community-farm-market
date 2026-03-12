@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopLeftRadius: borderRadius.xl,
     borderTopRightRadius: borderRadius.xl,
-    borderTopRadius.xl,
     padding: spacing.md,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: -2 },

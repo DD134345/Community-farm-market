@@ -77,9 +77,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {dietaryFilters.length > 0 && (
-          <DietaryFilter selected={dietaryFilters} onToggle={(tag) => {
-            setDietaryFilters(prev => 
-              prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+          <DietaryFilter selected={dietaryFilters} onToggle={(tag: DietaryTag) => {
+            setDietaryFilters((prev: DietaryTag[]) => 
+              prev.includes(tag) ? prev.filter((t: DietaryTag) => t !== tag) : [...prev, tag]
             );
           }} />
         )}
