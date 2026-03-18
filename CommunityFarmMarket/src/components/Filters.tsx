@@ -8,7 +8,7 @@ interface FilterChipProps {
   label: string;
   selected: boolean;
   onPress: () => void;
-  icon?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
 export function FilterChip({ label, selected, onPress, icon }: FilterChipProps) {
@@ -20,7 +20,7 @@ export function FilterChip({ label, selected, onPress, icon }: FilterChipProps) 
     >
       {icon && (
         <Ionicons
-          name={icon as any}
+          name={icon}
           size={14}
           color={selected ? colors.textLight : colors.textSecondary}
           style={styles.chipIcon}
@@ -38,7 +38,7 @@ interface CategoryFilterProps {
   onSelect: (category: ProductCategory | 'all') => void;
 }
 
-const categories: { key: ProductCategory | 'all'; label: string; icon: string }[] = [
+const categories: { key: ProductCategory | 'all'; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { key: 'all', label: 'All', icon: 'grid-outline' },
   { key: 'vegetables', label: 'Vegetables', icon: 'leaf-outline' },
   { key: 'fruits', label: 'Fruits', icon: 'nutrition-outline' },

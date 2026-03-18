@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { mockProducts, mockSellers, mockCommunityPosts, mockEvents } from '../data/mockData';
@@ -43,6 +43,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     setTimeout(() => setRefreshing(false), 1000);
   };
 
+  const handleSeeAll = (section: string) => {
+    Alert.alert('Coming Soon', `${section} section is not yet implemented.`);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -67,7 +71,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
-        onFilterPress={() => navigation.navigate('Filters')}
       />
 
       <ScrollView
@@ -87,7 +90,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Nearby Sellers</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSeeAll('Nearby Sellers')}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>
@@ -109,7 +112,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Fresh This Morning</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSeeAll('Fresh This Morning')}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>
@@ -133,7 +136,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Seasonal Deals</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSeeAll('Seasonal Deals')}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>
@@ -191,7 +194,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Upcoming Events</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSeeAll('Upcoming Events')}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>

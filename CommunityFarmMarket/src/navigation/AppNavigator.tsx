@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -21,8 +21,15 @@ export type RootStackParamList = {
   Checkout: { paymentMethod: string; deliveryFee: number; platformFee: number; total: number };
 };
 
+export type MainTabParamList = {
+  Home: undefined;
+  Cart: undefined;
+  Community: undefined;
+  Profile: undefined;
+};
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function MainTabs() {
   return (
@@ -79,17 +86,17 @@ export default function Navigation() {
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen
           name="ProductDetail"
-          component={ProductDetailScreen as any}
+          component={ProductDetailScreen}
           options={{ animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="SellerProfile"
-          component={SellerProfileScreen as any}
+          component={SellerProfileScreen}
           options={{ animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="Checkout"
-          component={CheckoutScreen as any}
+          component={CheckoutScreen}
           options={{ animation: 'slide_from_bottom' }}
         />
       </Stack.Navigator>

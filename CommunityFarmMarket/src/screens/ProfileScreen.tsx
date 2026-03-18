@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { colors, spacing, borderRadius, fontSize } from '../utils/theme';
@@ -11,14 +11,18 @@ interface ProfileScreenProps {
 export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   const { user } = useApp();
 
+  const handleMenuPress = (title: string) => {
+    Alert.alert('Coming Soon', `${title} feature is not yet implemented.`);
+  };
+
   const menuItems = [
-    { icon: 'receipt-outline', title: 'My Orders', subtitle: 'View order history', screen: 'Orders' },
-    { icon: 'heart-outline', title: 'Favorites', subtitle: 'Saved sellers & products', screen: 'Favorites' },
-    { icon: 'location-outline', title: 'Addresses', subtitle: 'Manage delivery addresses', screen: 'Addresses' },
-    { icon: 'wallet-outline', title: 'Payment Methods', subtitle: 'Manage payment options', screen: 'Payment' },
-    { icon: 'notifications-outline', title: 'Notifications', subtitle: 'Configure alerts', screen: 'Notifications' },
-    { icon: 'settings-outline', title: 'Settings', subtitle: 'App preferences', screen: 'Settings' },
-    { icon: 'help-circle-outline', title: 'Help & Support', subtitle: 'FAQ and contact', screen: 'Support' },
+    { icon: 'receipt-outline', title: 'My Orders', subtitle: 'View order history', action: () => handleMenuPress('My Orders') },
+    { icon: 'heart-outline', title: 'Favorites', subtitle: 'Saved sellers & products', action: () => handleMenuPress('Favorites') },
+    { icon: 'location-outline', title: 'Addresses', subtitle: 'Manage delivery addresses', action: () => handleMenuPress('Addresses') },
+    { icon: 'wallet-outline', title: 'Payment Methods', subtitle: 'Manage payment options', action: () => handleMenuPress('Payment Methods') },
+    { icon: 'notifications-outline', title: 'Notifications', subtitle: 'Configure alerts', action: () => handleMenuPress('Notifications') },
+    { icon: 'settings-outline', title: 'Settings', subtitle: 'App preferences', action: () => handleMenuPress('Settings') },
+    { icon: 'help-circle-outline', title: 'Help & Support', subtitle: 'FAQ and contact', action: () => handleMenuPress('Help & Support') },
   ];
 
   return (
@@ -67,7 +71,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             key={index}
             style={styles.menuItem}
-            onPress={() => navigation.navigate(item.screen)}
+            onPress={item.action}
           >
             <View style={styles.menuIcon}>
               <Ionicons name={item.icon as any} size={22} color={colors.primary} />
