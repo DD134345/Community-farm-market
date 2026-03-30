@@ -11,6 +11,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import SellerProfileScreen from '../screens/SellerProfileScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
+import ChatListScreen, { ChatDetailScreen } from '../screens/ChatScreen';
+import CommunityBulkBuyScreen from '../screens/CommunityBulkBuyScreen';
 
 import { colors } from '../utils/theme';
 
@@ -19,6 +21,9 @@ export type RootStackParamList = {
   ProductDetail: { product: any };
   SellerProfile: { seller: any };
   Checkout: { paymentMethod: string; deliveryFee: number; platformFee: number; total: number };
+  ChatList: undefined;
+  ChatDetail: { sellerId: string; sellerName: string };
+  CommunityBulkBuy: undefined;
 };
 
 export type MainTabParamList = {
@@ -98,6 +103,21 @@ export default function Navigation() {
           name="Checkout"
           component={CheckoutScreen}
           options={{ animation: 'slide_from_bottom' }}
+        />
+        <Stack.Screen
+          name="ChatList"
+          component={ChatListScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="ChatDetail"
+          component={ChatDetailScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="CommunityBulkBuy"
+          component={CommunityBulkBuyScreen}
+          options={{ animation: 'slide_from_right' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

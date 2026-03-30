@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Product, Seller } from '../types';
+import { Product, Seller, Allergen, Certification } from '../types';
 import { useApp } from '../context/AppContext';
 import { mockSellers, mockReviews } from '../data/mockData';
 import { colors, spacing, borderRadius, fontSize } from '../utils/theme';
@@ -12,6 +12,42 @@ interface ProductDetailScreenProps {
 }
 
 const { width } = Dimensions.get('window');
+
+const allergenLabels: Record<Allergen, string> = {
+  gluten: 'Gluten',
+  dairy: 'Dairy',
+  eggs: 'Eggs',
+  fish: 'Fish',
+  shellfish: 'Shellfish',
+  tree_nuts: 'Tree Nuts',
+  peanuts: 'Peanuts',
+  soy: 'Soy',
+  sesame: 'Sesame',
+  mustard: 'Mustard',
+  celery: 'Celery',
+  lupin: 'Lupin',
+  molluscs: 'Molluscs',
+  sulphites: 'Sulphites',
+};
+
+const certificationLabels: Record<Certification, string> = {
+  organic: 'Organic',
+  halal: 'Halal',
+  kosher: 'Kosher',
+  fair_trade: 'Fair Trade',
+  rainforest_alliance: 'Rainforest Alliance',
+  non_gmo: 'Non-GMO',
+  grass_fed: 'Grass-Fed',
+  free_range: 'Free Range',
+  local: 'Local',
+};
+
+const temperatureZoneLabels: Record<string, { label: string; color: string }> = {
+  frozen: { label: 'Frozen', color: '#03A9F4' },
+  cold: { label: 'Cold Storage', color: '#00BCD4' },
+  ambient: { label: 'Room Temperature', color: '#4CAF50' },
+  hot: { label: 'Hot Food', color: '#FF5722' },
+};
 
 export default function ProductDetailScreen({ navigation, route }: ProductDetailScreenProps) {
   const { product } = route.params;
@@ -25,6 +61,14 @@ export default function ProductDetailScreen({ navigation, route }: ProductDetail
   const handleAddToCart = () => {
     addToCart(product, quantity);
     navigation.navigate('Cart');
+  };
+
+  const handleChatWithSeller = () => {
+    navigation.navigate('ChatDetail', { sellerId: seller.id, sellerName: seller.name });
+  };
+
+  const getTemperatureZone = () => {
+    return temperatureZoneLabels[product.temperatureZone] || { label: 'Unknown', color: colors.textMuted };
   };
 
   return (
@@ -44,6 +88,10 @@ export default function ProductDetailScreen({ navigation, route }: ProductDetail
               <Ionicons name="share-outline" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
+          <View style={[styles.tempZoneBadge, { backgroundColor: getTemperatureZone().color }]}>
+            <Ionicons name="thermometer" size={14} color={colors.textLight} />
+            <Text style={styles.tempZoneText}>{getTemperatureZone().label}</Text>
+          </View>
           {product.coldChain && (
             <View style={styles.coldChainBadge}>
               <Ionicons name="snow" size={16} color={colors.coldChain} />
@@ -53,6 +101,12 @@ export default function ProductDetailScreen({ navigation, route }: ProductDetail
           {product.availableNow && (
             <View style={styles.availableBadge}>
               <Text style={styles.availableText}>Available Now</Text>
+            </View>
+          )}
+          {product.preOrder && (
+            <View style={styles.preOrderBadge}>
+              <Ionicons name="time-outline" size={14} color={colors.textLight} />
+              <Text style={styles.preOrderText}>Pre-order ({product.prepTime} min prep)</Text>
             </View>
           )}
         </View>
@@ -85,6 +139,11 @@ export default function ProductDetailScreen({ navigation, route }: ProductDetail
               ))}
             </View>
           )}
+
+          <TouchableOpacity style={styles.chatSellerButton} onPress={handleChatWithSeller}>
+            <Ionicons name="chatbubbles" size={20} color={colors.primary} />
+            <Text style={styles.chatSellerText}>Chat with Seller</Text>
+          </TouchableOpacity>
 
           <View style={styles.sellerSection}>
             <Text style={styles.sectionTitle}>Seller</Text>
@@ -144,16 +203,69 @@ export default function ProductDetailScreen({ navigation, route }: ProductDetail
                     <Text style={styles.reviewDate}>2 days ago</Text>
                   </View>
                   <Text style={styles.reviewComment}>{review.comment}</Text>
+                  {review.sellerResponse && (
+                    <View style={styles.sellerResponseCard}>
+                      <Text style={styles.sellerResponseLabel}>Seller Response:</Text>
+                      <Text style={styles.sellerResponseText}>{review.sellerResponse.comment}</Text>
+                    </View>
+                  )}
                 </View>
               ))}
             </View>
           )}
 
+          <View style={styles.complianceSection}>
+            <Text style={styles.sectionTitle}>Compliance & Certifications</Text>
+            
+            {product.compliance && (
+              <>
+                {product.compliance.certifications.length > 0 && (
+                  <View style={styles.certificationsRow}>
+                    {product.compliance.certifications.map(cert => (
+                      <View key={cert} style={styles.certificationBadge}>
+                        <Ionicons name="shield-checkmark" size={14} color={colors.success} />
+                        <Text style={styles.certificationText}>{certificationLabels[cert]}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+
+                {product.compliance.allergens.length > 0 && (
+                  <View style={styles.allergenWarning}>
+                    <Ionicons name="warning" size={18} color={colors.warning} />
+                    <Text style={styles.allergenTitle}>Allergen Warning:</Text>
+                    <View style={styles.allergenList}>
+                      {product.compliance.allergens.map(allergen => (
+                        <Text key={allergen} style={styles.allergenText}>
+                          {allergenLabels[allergen]}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                <View style={styles.storageCard}>
+                  <Text style={styles.storageTitle}>
+                    <Ionicons name="cube-outline" size={16} color={colors.primary} /> Storage Instructions
+                  </Text>
+                  <Text style={styles.storageText}>{product.compliance.storageInstructions}</Text>
+                </View>
+
+                {product.compliance.bestBefore && (
+                  <View style={styles.infoRow}>
+                    <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
+                    <Text style={styles.infoText}>Best before: {new Date(product.compliance.bestBefore).toLocaleDateString()}</Text>
+                  </View>
+                )}
+              </>
+            )}
+          </View>
+
           <View style={styles.harvestInfo}>
             <Text style={styles.sectionTitle}>Harvest Information</Text>
             {product.harvestDate && (
               <View style={styles.infoRow}>
-                <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
+                <Ionicons name="leaf-outline" size={18} color={colors.textSecondary} />
                 <Text style={styles.infoText}>Harvested: {new Date(product.harvestDate).toLocaleDateString()}</Text>
               </View>
             )}
@@ -509,5 +621,140 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textLight,
     marginLeft: spacing.sm,
+  },
+  chatSellerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  chatSellerText: {
+    fontSize: fontSize.md,
+    fontWeight: '600',
+    color: colors.primary,
+    marginLeft: spacing.sm,
+  },
+  tempZoneBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    left: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
+  },
+  tempZoneText: {
+    color: colors.textLight,
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  preOrderBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    right: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.preOrder,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
+  },
+  preOrderText: {
+    color: colors.textLight,
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  complianceSection: {
+    marginBottom: spacing.md,
+  },
+  certificationsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: spacing.md,
+  },
+  certificationBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
+    marginRight: spacing.xs,
+    marginBottom: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.success,
+  },
+  certificationText: {
+    fontSize: fontSize.xs,
+    color: colors.success,
+    fontWeight: '500',
+    marginLeft: 4,
+    textTransform: 'capitalize',
+  },
+  allergenWarning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.md,
+  },
+  allergenTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+    color: colors.warning,
+    marginLeft: spacing.sm,
+  },
+  allergenList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    flex: 1,
+    marginLeft: spacing.xs,
+  },
+  allergenText: {
+    fontSize: fontSize.xs,
+    color: colors.warning,
+    marginLeft: spacing.xs,
+  },
+  storageCard: {
+    backgroundColor: colors.surface,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.sm,
+  },
+  storageTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  storageText: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+  },
+  sellerResponseCard: {
+    backgroundColor: colors.background,
+    padding: spacing.sm,
+    borderRadius: borderRadius.sm,
+    marginTop: spacing.sm,
+  },
+  sellerResponseLabel: {
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    color: colors.primary,
+    marginBottom: spacing.xs,
+  },
+  sellerResponseText: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
   },
 });

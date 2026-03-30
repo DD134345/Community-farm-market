@@ -10,7 +10,7 @@ interface CommunityScreenProps {
 }
 
 export default function CommunityScreen({ navigation }: CommunityScreenProps) {
-  const [activeTab, setActiveTab] = useState<'feed' | 'events'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'bulkbuy' | 'events'>('feed');
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -186,6 +186,19 @@ export default function CommunityScreen({ navigation }: CommunityScreenProps) {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          style={[styles.tab, activeTab === 'bulkbuy' && styles.activeTab]}
+          onPress={() => setActiveTab('bulkbuy')}
+        >
+          <Ionicons
+            name="people"
+            size={20}
+            color={activeTab === 'bulkbuy' ? colors.primary : colors.textSecondary}
+          />
+          <Text style={[styles.tabText, activeTab === 'bulkbuy' && styles.activeTabText]}>
+            Bulk Buy
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'events' && styles.activeTab]}
           onPress={() => setActiveTab('events')}
         >
@@ -207,6 +220,30 @@ export default function CommunityScreen({ navigation }: CommunityScreenProps) {
           renderItem={renderPost}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+        />
+      ) : activeTab === 'bulkbuy' ? (
+        <FlatList
+          data={[] as any}
+          keyExtractor={(item: any) => item.id}
+          renderItem={() => null}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <View style={styles.bulkBuyEmpty}>
+              <TouchableOpacity 
+                style={styles.bulkBuyButton}
+                onPress={() => navigation.navigate('CommunityBulkBuy')}
+              >
+                <Ionicons name="people" size={40} color={colors.primary} />
+                <Text style={styles.bulkBuyTitle}>Community Bulk Buy</Text>
+                <Text style={styles.bulkBuySubtitle}>Team up with neighbors to get better deals!</Text>
+                <View style={styles.bulkBuyAction}>
+                  <Text style={styles.bulkBuyActionText}>Browse Active Deals</Text>
+                  <Ionicons name="arrow-forward" size={16} color={colors.primary} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          }
         />
       ) : (
         <FlatList
@@ -502,5 +539,42 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textLight,
+  },
+  bulkBuyEmpty: {
+    flex: 1,
+    padding: spacing.md,
+  },
+  bulkBuyButton: {
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.xl,
+    alignItems: 'center',
+  },
+  bulkBuyTitle: {
+    fontSize: fontSize.xl,
+    fontWeight: '700',
+    color: colors.text,
+    marginTop: spacing.md,
+  },
+  bulkBuySubtitle: {
+    fontSize: fontSize.md,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
+    textAlign: 'center',
+  },
+  bulkBuyAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.lg,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.primaryLight,
+    borderRadius: borderRadius.round,
+  },
+  bulkBuyActionText: {
+    fontSize: fontSize.md,
+    fontWeight: '600',
+    color: colors.primary,
+    marginRight: spacing.xs,
   },
 });

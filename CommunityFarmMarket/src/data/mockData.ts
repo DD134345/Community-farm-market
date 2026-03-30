@@ -1,4 +1,4 @@
-import { Seller, Product, CommunityPost, Event, PickupPoint, User, Review } from '../types';
+import { Seller, Product, CommunityPost, Event, PickupPoint, User, Review, ChatConversation, ChatMessage, GroupBuyDetails, CommunityVoucher, SellerStory } from '../types';
 
 export const mockSellers: Seller[] = [
   {
@@ -6,15 +6,31 @@ export const mockSellers: Seller[] = [
     userId: 'u1',
     name: 'Green Valley Farm',
     description: 'Fresh organic vegetables grown in District 2',
-    story: 'Our family has been farming in District 2 for three generations. We believe in sustainable agriculture and delivering the freshest produce to our community.',
+    story: 'Our family has been farming in District 2 for three generations. We believe in sustainable agriculture and delivering the freshest produce to our community. Every vegetable is hand-picked with love.',
     avatar: 'https://picsum.photos/seed/seller1/200',
     coverImage: 'https://picsum.photos/seed/farm1/800/400',
     rating: 4.8,
     reviewCount: 156,
     verified: true,
+    badge: 'star',
     address: { id: 'a1', street: '123 Farm Road', district: 'District 2', city: 'Ho Chi Minh City', ward: 'Thao Dien', isDefault: true },
     distance: 2.3,
     products: [],
+    totalSales: 1234,
+    memberSince: new Date('2023-01-15'),
+    responseTime: '< 1 hour',
+    stories: [
+      {
+        id: 's1',
+        sellerId: '1',
+        title: "Today's Fresh Harvest",
+        content: 'Just harvested these beautiful spinach and kale! Order now for same-day delivery.',
+        image: 'https://picsum.photos/seed/harvest1/400/400',
+        type: 'today_menu',
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      }
+    ],
     createdAt: new Date('2023-01-15')
   },
   {
@@ -22,15 +38,20 @@ export const mockSellers: Seller[] = [
     userId: 'u2',
     name: 'Sunny Dairy Farm',
     description: 'Fresh milk, cheese, and dairy products from local cows',
-    story: 'We have a small herd of grass-fed cows that produce the creamiest milk in the city. Every product is made with love and care.',
+    story: 'We have a small herd of grass-fed cows that produce the creamiest milk in the city. Every product is made with love and care. Our cows are happy, and that makes our dairy delicious!',
     avatar: 'https://picsum.photos/seed/seller2/200',
     coverImage: 'https://picsum.photos/seed/farm2/800/400',
     rating: 4.9,
     reviewCount: 89,
     verified: true,
+    badge: 'trusted',
     address: { id: 'a2', street: '45 Meadow Lane', district: 'District 7', city: 'Ho Chi Minh City', isDefault: true },
     distance: 4.1,
     products: [],
+    totalSales: 856,
+    memberSince: new Date('2023-03-20'),
+    responseTime: '< 2 hours',
+    stories: [],
     createdAt: new Date('2023-03-20')
   },
   {
@@ -38,15 +59,20 @@ export const mockSellers: Seller[] = [
     userId: 'u3',
     name: 'Hue Free Range Eggs',
     description: 'Farm fresh eggs from free-range chickens',
-    story: 'Our chickens roam freely in our backyard, eating natural feed. The result? The most delicious and nutritious eggs you will ever taste.',
+    story: 'Our chickens roam freely in our backyard, eating natural feed. The result? The most delicious and nutritious eggs you will ever taste. We treat our hens like family!',
     avatar: 'https://picsum.photos/seed/seller3/200',
     coverImage: 'https://picsum.photos/seed/farm3/800/400',
     rating: 4.7,
     reviewCount: 203,
     verified: true,
+    badge: 'top_seller',
     address: { id: 'a3', street: '78 Country Road', district: 'District 9', city: 'Ho Chi Minh City', isDefault: true },
     distance: 6.5,
     products: [],
+    totalSales: 2156,
+    memberSince: new Date('2022-11-10'),
+    responseTime: '< 30 mins',
+    stories: [],
     createdAt: new Date('2022-11-10')
   },
   {
@@ -54,16 +80,53 @@ export const mockSellers: Seller[] = [
     userId: 'u4',
     name: 'Mekong Fresh Seafood',
     description: 'Daily catch from the Mekong Delta',
-    story: 'We work directly with local fishermen in the Mekong Delta to bring you the freshest seafood the same day it is caught.',
+    story: 'We work directly with local fishermen in the Mekong Delta to bring you the freshest seafood the same day it is caught. Our partnership supports local fishing communities.',
     avatar: 'https://picsum.photos/seed/seller4/200',
     coverImage: 'https://picsum.photos/seed/farm4/800/400',
     rating: 4.6,
     reviewCount: 178,
     verified: true,
+    badge: 'trusted',
     address: { id: 'a4', street: '12 Harbor Street', district: 'District 4', city: 'Ho Chi Minh City', isDefault: true },
     distance: 3.2,
     products: [],
+    totalSales: 945,
+    memberSince: new Date('2023-02-05'),
+    responseTime: '< 1 hour',
+    stories: [],
     createdAt: new Date('2023-02-05')
+  },
+  {
+    id: '5',
+    userId: 'u5',
+    name: 'Mama Nguyen Bakery',
+    description: 'Artisan bread and pastries baked fresh daily',
+    story: 'I learned baking from my grandmother and have been perfecting my recipes for 20 years. Every loaf is handcrafted with traditional methods and love.',
+    avatar: 'https://picsum.photos/seed/seller5/200',
+    coverImage: 'https://picsum.photos/seed/bakery/800/400',
+    rating: 4.9,
+    reviewCount: 312,
+    verified: true,
+    badge: 'star',
+    address: { id: 'a5', street: '88 Baker Street', district: 'District 1', city: 'Ho Chi Minh City', isDefault: true },
+    distance: 1.5,
+    products: [],
+    totalSales: 3421,
+    memberSince: new Date('2022-06-01'),
+    responseTime: '< 15 mins',
+    stories: [
+      {
+        id: 's2',
+        sellerId: '5',
+        title: 'Fresh Baguettes Ready!',
+        content: 'Just pulled these golden baguettes from the oven. Perfect for your breakfast!',
+        image: 'https://picsum.photos/seed/bread1/400/400',
+        type: 'today_menu',
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      }
+    ],
+    createdAt: new Date('2022-06-01')
   }
 ];
 
@@ -81,12 +144,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     sourcing: 'Grown in my backyard in District 2',
     views: 234,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: [],
+      certifications: ['organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store in refrigerator, use within 5 days',
+      halal: true,
+      vegan: true,
+      organicCertified: true
+    }
   },
   {
     id: 'p2',
@@ -101,12 +177,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     sourcing: 'Grown in my backyard in District 2',
     views: 189,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: [],
+      certifications: ['organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store at room temperature, refrigerate after cutting',
+      halal: true,
+      vegan: true,
+      organicCertified: true
+    }
   },
   {
     id: 'p3',
@@ -121,11 +210,21 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     sourcing: 'Grown in my backyard in District 2',
     views: 156,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: [],
+      certifications: ['organic'],
+      storageInstructions: 'Store in a glass of water at room temperature',
+      halal: true,
+      vegan: true,
+      organicCertified: true
+    }
   },
   {
     id: 'p4',
@@ -140,13 +239,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: true,
+    temperatureZone: 'cold',
     organic: true,
     harvestDate: new Date(),
     expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     sourcing: 'Produced at our farm in District 7',
     views: 312,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['dairy'],
+      certifications: ['organic', 'grass_fed'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Keep refrigerated, store at 4°C or below',
+      halal: true,
+      vegan: false,
+      organicCertified: true
+    }
   },
   {
     id: 'p5',
@@ -159,13 +270,23 @@ export const mockProducts: Product[] = [
     images: ['https://picsum.photos/seed/cheese/400/400'],
     dietary: ['gluten-free', 'keto', 'low-carb'],
     inStock: true,
-    availableNow: true,
-    preOrder: false,
+    availableNow: false,
+    preOrder: true,
+    prepTime: 1440,
     coldChain: true,
+    temperatureZone: 'cold',
     organic: true,
     sourcing: 'Handcrafted at Sunny Dairy Farm',
     views: 145,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['dairy'],
+      certifications: ['organic'],
+      storageInstructions: 'Keep refrigerated, best consumed within 30 days of opening',
+      halal: true,
+      vegan: false,
+      organicCertified: true
+    }
   },
   {
     id: 'p6',
@@ -180,13 +301,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: true,
+    temperatureZone: 'cold',
     organic: true,
     harvestDate: new Date(),
     expiryDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     sourcing: 'Made fresh daily at Sunny Dairy Farm',
     views: 267,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['dairy'],
+      certifications: ['organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Keep refrigerated at all times',
+      halal: true,
+      vegan: false,
+      organicCertified: true
+    }
   },
   {
     id: 'p7',
@@ -201,12 +334,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
     sourcing: 'Collected from our backyard coop this morning',
     views: 423,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['eggs'],
+      certifications: ['free_range', 'organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store in refrigerator, use within 3 weeks',
+      halal: true,
+      vegan: false,
+      organicCertified: true
+    }
   },
   {
     id: 'p8',
@@ -221,12 +367,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
     sourcing: 'From our free-range duck pond',
     views: 198,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['eggs'],
+      certifications: ['free_range'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store in refrigerator',
+      halal: true,
+      vegan: false,
+      organicCertified: false
+    }
   },
   {
     id: 'p9',
@@ -241,13 +400,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: true,
+    temperatureZone: 'frozen',
     organic: false,
     harvestDate: new Date(),
     expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     sourcing: 'Direct from Mekong Delta fishermen',
     views: 356,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['shellfish', 'fish'],
+      certifications: [],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Keep on ice or frozen, consume within 2 days',
+      halal: true,
+      vegan: false,
+      organicCertified: false
+    }
   },
   {
     id: 'p10',
@@ -262,13 +433,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: true,
+    temperatureZone: 'cold',
     organic: false,
     harvestDate: new Date(),
     expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     sourcing: 'Fresh from the Mekong Delta',
     views: 289,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['fish'],
+      certifications: [],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Keep refrigerated, best consumed same day',
+      halal: true,
+      vegan: false,
+      organicCertified: false
+    }
   },
   {
     id: 'p11',
@@ -283,12 +466,25 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     sourcing: 'Grown in my backyard in District 2',
     views: 167,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: [],
+      certifications: ['organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store in refrigerator',
+      halal: true,
+      vegan: true,
+      organicCertified: true
+    }
   },
   {
     id: 'p12',
@@ -303,12 +499,91 @@ export const mockProducts: Product[] = [
     inStock: true,
     availableNow: true,
     preOrder: false,
+    prepTime: 0,
     coldChain: false,
+    temperatureZone: 'ambient',
     organic: true,
     harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     sourcing: 'Mix of fresh picks from our farm',
     views: 445,
-    createdAt: new Date()
+    createdAt: new Date(),
+    compliance: {
+      allergens: [],
+      certifications: ['organic'],
+      prepDate: new Date(),
+      bestBefore: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store in refrigerator, use within a week',
+      halal: true,
+      vegan: true,
+      organicCertified: true
+    }
+  },
+  {
+    id: 'p13',
+    sellerId: '5',
+    name: 'Fresh Baguette',
+    description: 'Traditional French-style baguette, baked this morning',
+    price: 25000,
+    unit: 'piece',
+    category: 'bakery',
+    images: ['https://picsum.photos/seed/baguette/400/400'],
+    dietary: ['vegan', 'vegetarian'],
+    inStock: true,
+    availableNow: true,
+    preOrder: false,
+    prepTime: 180,
+    coldChain: false,
+    temperatureZone: 'ambient',
+    organic: false,
+    harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    sourcing: 'Baked fresh daily at Mama Nguyen Bakery',
+    views: 523,
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['gluten'],
+      certifications: [],
+      prepDate: new Date(Date.now() - 3 * 60 * 60 * 1000),
+      bestBefore: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Best consumed same day, store in bread box',
+      halal: true,
+      vegan: true,
+      organicCertified: false
+    }
+  },
+  {
+    id: 'p14',
+    sellerId: '5',
+    name: 'Butter Croissant',
+    description: 'Flaky, buttery croissant made with French butter',
+    price: 35000,
+    unit: 'piece',
+    category: 'bakery',
+    images: ['https://picsum.photos/seed/croissant/400/400'],
+    dietary: ['vegetarian'],
+    inStock: true,
+    availableNow: true,
+    preOrder: false,
+    prepTime: 60,
+    coldChain: false,
+    temperatureZone: 'ambient',
+    organic: false,
+    harvestDate: new Date(),
+    expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    sourcing: 'Baked fresh daily at Mama Nguyen Bakery',
+    views: 412,
+    createdAt: new Date(),
+    compliance: {
+      allergens: ['gluten', 'dairy', 'eggs'],
+      certifications: [],
+      prepDate: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      bestBefore: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      storageInstructions: 'Store at room temperature, best consumed within 2 days',
+      halal: false,
+      vegan: false,
+      organicCertified: false
+    }
   }
 ];
 
@@ -448,6 +723,10 @@ export const mockReviews: Review[] = [
     sellerId: '1',
     rating: 5,
     comment: 'Great quality vegetables, love the sourcing transparency!',
+    sellerResponse: {
+      comment: 'Thank you so much! We put a lot of love into growing our vegetables. Looking forward to serving you again!',
+      respondedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+    },
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
   },
   {
@@ -460,6 +739,17 @@ export const mockReviews: Review[] = [
     rating: 5,
     comment: 'The milk is amazing! Tastes just like farm-fresh milk from my childhood.',
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+  },
+  {
+    id: 'r4',
+    orderId: 'o4',
+    buyerId: 'b4',
+    buyerName: 'Pham Van D',
+    buyerAvatar: 'https://picsum.photos/seed/reviewer4/200',
+    sellerId: '5',
+    rating: 5,
+    comment: 'Best croissants in the city! The flaky texture is incredible.',
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
   }
 ];
 
@@ -473,3 +763,138 @@ export const currentUser: User = {
   address: { id: 'ua1', street: '456 User Street', district: 'District 2', city: 'Ho Chi Minh City', isDefault: true },
   createdAt: new Date()
 };
+
+export const mockChatConversations: ChatConversation[] = [
+  {
+    id: 'chat1',
+    participantIds: ['current', '1'],
+    participantNames: ['John Doe', 'Green Valley Farm'],
+    participantAvatars: ['https://picsum.photos/seed/currentuser/200', 'https://picsum.photos/seed/seller1/200'],
+    lastMessage: 'Is the spinach available for same-day delivery?',
+    lastMessageTime: new Date(Date.now() - 30 * 60 * 1000),
+    unreadCount: 1
+  },
+  {
+    id: 'chat2',
+    participantIds: ['current', '5'],
+    participantNames: ['John Doe', 'Mama Nguyen Bakery'],
+    participantAvatars: ['https://picsum.photos/seed/currentuser/200', 'https://picsum.photos/seed/seller5/200'],
+    lastMessage: 'Can I pre-order 5 baguettes for tomorrow morning?',
+    lastMessageTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    unreadCount: 0
+  }
+];
+
+export const mockChatMessages: ChatMessage[] = [
+  {
+    id: 'm1',
+    senderId: 'current',
+    receiverId: '1',
+    senderName: 'John Doe',
+    senderAvatar: 'https://picsum.photos/seed/currentuser/200',
+    content: 'Hi! Do you have fresh spinach available today?',
+    timestamp: new Date(Date.now() - 60 * 60 * 1000),
+    read: true
+  },
+  {
+    id: 'm2',
+    senderId: '1',
+    receiverId: 'current',
+    senderName: 'Green Valley Farm',
+    senderAvatar: 'https://picsum.photos/seed/seller1/200',
+    content: 'Yes! We just harvested fresh spinach this morning. Would you like some?',
+    timestamp: new Date(Date.now() - 55 * 60 * 1000),
+    read: true
+  },
+  {
+    id: 'm3',
+    senderId: 'current',
+    receiverId: '1',
+    senderName: 'John Doe',
+    senderAvatar: 'https://picsum.photos/seed/currentuser/200',
+    content: 'Is the spinach available for same-day delivery?',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000),
+    read: true
+  },
+  {
+    id: 'm4',
+    senderId: '1',
+    receiverId: 'current',
+    senderName: 'Green Valley Farm',
+    senderAvatar: 'https://picsum.photos/seed/seller1/200',
+    content: 'Absolutely! If you order before 2 PM, we can deliver today. Same-day delivery is free for orders over 100,000 VND!',
+    timestamp: new Date(Date.now() - 25 * 60 * 1000),
+    read: false
+  }
+];
+
+export const mockGroupBuys: GroupBuyDetails[] = [
+  {
+    id: 'gb1',
+    productId: 'p1',
+    productName: 'Organic Spinach Bundle',
+    sellerId: '1',
+    sellerName: 'Green Valley Farm',
+    targetQuantity: 20,
+    currentQuantity: 15,
+    discount: 20,
+    originalPrice: 25000,
+    discountedPrice: 20000,
+    endsAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    district: 'District 2',
+    status: 'active',
+    participants: [
+      { userId: 'u1', userName: 'Nguyen A', quantity: 2, joinedAt: new Date() },
+      { userId: 'u2', userName: 'Tran B', quantity: 1, joinedAt: new Date() },
+      { userId: 'u3', userName: 'Le C', quantity: 3, joinedAt: new Date() },
+    ]
+  },
+  {
+    id: 'gb2',
+    productId: 'p13',
+    productName: 'Fresh Baguette Pack (10)',
+    sellerId: '5',
+    sellerName: 'Mama Nguyen Bakery',
+    targetQuantity: 30,
+    currentQuantity: 22,
+    discount: 15,
+    originalPrice: 250000,
+    discountedPrice: 212500,
+    endsAt: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    district: 'District 1',
+    status: 'active',
+    participants: [
+      { userId: 'u4', userName: 'Pham D', quantity: 5, joinedAt: new Date() },
+      { userId: 'u5', userName: 'Hoang E', quantity: 2, joinedAt: new Date() },
+    ]
+  }
+];
+
+export const mockCommunityVouchers: CommunityVoucher[] = [
+  {
+    id: 'v1',
+    sellerId: '1',
+    sellerName: 'Green Valley Farm',
+    title: 'District 2 Neighbors Special',
+    description: 'Get 15% off on orders above 200,000 VND when you order together with 5+ neighbors!',
+    discount: 15,
+    minBuyers: 5,
+    currentBuyers: 3,
+    expiresAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    district: 'District 2',
+    status: 'active'
+  },
+  {
+    id: 'v2',
+    sellerId: '5',
+    sellerName: 'Mama Nguyen Bakery',
+    title: 'Morning Rush Deal',
+    description: 'Join 10+ neighbors for fresh croissants and get 20% off!',
+    discount: 20,
+    minBuyers: 10,
+    currentBuyers: 7,
+    expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    district: 'District 1',
+    status: 'active'
+  }
+];

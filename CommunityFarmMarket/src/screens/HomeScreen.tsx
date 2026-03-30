@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Alert } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { mockProducts, mockSellers, mockCommunityPosts, mockEvents } from '../data/mockData';
@@ -7,7 +7,7 @@ import SearchBar from '../components/SearchBar';
 import { CategoryFilter, DietaryFilter, DistrictFilter } from '../components/Filters';
 import ProductCard from '../components/ProductCard';
 import SellerCard from '../components/SellerCard';
-import { ProductCategory, DietaryTag, Product } from '../types';
+import { ProductCategory, DietaryTag, Product, SellerStory } from '../types';
 import { colors, spacing, borderRadius, fontSize } from '../utils/theme';
 
 interface HomeScreenProps {
@@ -21,6 +21,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [refreshing, setRefreshing] = useState(false);
 
   const districts = ['District 1', 'District 2', 'District 3', 'District 7', 'District 9'];
+
+  const allStories: SellerStory[] = mockSellers
+    .filter(s => s.stories && s.stories.length > 0)
+    .flatMap(s => s.stories.map(story => ({ ...story, sellerName: s.name, sellerAvatar: s.avatar })));
 
   const filteredProducts = mockProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -47,6 +51,13 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     Alert.alert('Coming Soon', `${section} section is not yet implemented.`);
   };
 
+  const handleStoryPress = (story: SellerStory & { sellerName?: string; sellerAvatar?: string }) => {
+    const seller = mockSellers.find(s => s.id === story.sellerId);
+    if (seller) {
+      navigation.navigate('SellerProfile', { seller });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -60,12 +71,20 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color={colors.text} />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationCount}>3</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity 
+            style={styles.messageButton}
+            onPress={() => navigation.navigate('ChatList')}
+          >
+            <Ionicons name="chatbubbles-outline" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={24} color={colors.text} />
+            <View style={styles.notificationBadge}>
+              <Text style={styles.notificationCount}>3</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <SearchBar
@@ -85,6 +104,45 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
               prev.includes(tag) ? prev.filter((t: DietaryTag) => t !== tag) : [...prev, tag]
             );
           }} />
+        )}
+
+        {allStories.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Today's Menu</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('CommunityBulkBuy')}>
+                <Text style={styles.seeAll}>View All</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesScrollView}>
+              {allStories.map((story, index) => (
+                <TouchableOpacity 
+                  key={story.id} 
+                  style={styles.storyItem}
+                  onPress={() => handleStoryPress(story)}
+                >
+                  <View style={styles.storyRing}>
+                    <Image 
+                      source={{ uri: (story as any).sellerAvatar || 'https://picsum.photos/seed/default/200' }} 
+                      style={styles.storyAvatar} 
+                    />
+                  </View>
+                  <Text style={styles.storySellerName} numberOfLines={1}>
+                    {(story as any).sellerName || 'Seller'}
+                  </Text>
+                  {story.image && (
+                    <Image source={{ uri: story.image }} style={styles.storyImage} />
+                  )}
+                  <View style={styles.storyContent}>
+                    <Text style={styles.storyTitle} numberOfLines={2}>{story.title}</Text>
+                    <Text style={styles.storyTime}>
+                      {Math.max(0, Math.floor((new Date(story.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60)))}h left
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         )}
 
         <View style={styles.section}>
@@ -420,5 +478,72 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 100,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  messageButton: {
+    padding: spacing.sm,
+    marginRight: spacing.xs,
+  },
+  storiesScrollView: {
+    paddingHorizontal: spacing.md,
+  },
+  storyItem: {
+    width: 140,
+    marginRight: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+  },
+  storyRing: {
+    position: 'absolute',
+    top: spacing.sm,
+    left: spacing.sm,
+    zIndex: 1,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    borderRadius: 22,
+    padding: 2,
+  },
+  storyAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.border,
+  },
+  storyImage: {
+    width: '100%',
+    height: 80,
+    backgroundColor: colors.border,
+  },
+  storyContent: {
+    padding: spacing.sm,
+  },
+  storySellerName: {
+    position: 'absolute',
+    top: spacing.sm,
+    left: spacing.sm,
+    zIndex: 1,
+    marginLeft: 44,
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    color: colors.text,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    paddingHorizontal: spacing.xs,
+    paddingVertical: 2,
+    borderRadius: borderRadius.sm,
+  },
+  storyTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: '500',
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  storyTime: {
+    fontSize: fontSize.xs,
+    color: colors.warning,
+    fontWeight: '500',
   },
 });
